@@ -7,4 +7,12 @@ class UserWebauthnIdentity < ApplicationRecord
 
   validates :user_id, uniqueness: true
   validates :webauthn_user_id, presence: true, uniqueness: true
+
+  before_validation :set_webauthn_user_id, on: :create
+
+  private
+
+  def set_webauthn_user_id
+    self.webauthn_user_id ||= WebAuthn.generate_user_id
+  end
 end
