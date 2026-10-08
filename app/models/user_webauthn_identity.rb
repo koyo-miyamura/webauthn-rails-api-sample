@@ -1,0 +1,2 @@
+class UserWebauthnIdentity < ApplicationRecord
+end
