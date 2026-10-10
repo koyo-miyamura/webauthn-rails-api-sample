@@ -1,0 +1,56 @@
+
+── 1. options 取得 ──
+POST /api/v1/registration/options
+
+Response:
+{
+  "challenge": "7XvzBLJKA8aFyBr0HWb2dRvshXTAHs2l6w2KGGFOJ-o",
+  "timeout": 120000,
+  "extensions": {},
+  "rp": {
+    "name": "Example Inc."
+  },
+  "user": {
+    "name": "usercode--FPuR9WXSb8rT0p4NEIYhOloG0hcYazZbl6CflnbfXQ-UP3g5u1G_NVJ9u0wKGY2CbMC1Sx8mgqt1nOpl4yZPw",
+    "id": "-FPuR9WXSb8rT0p4NEIYhOloG0hcYazZbl6CflnbfXQ-UP3g5u1G_NVJ9u0wKGY2CbMC1Sx8mgqt1nOpl4yZPw",
+    "displayName": "usercode--FPuR9WXSb8rT0p4NEIYhOloG0hcYazZbl6CflnbfXQ-UP3g5u1G_NVJ9u0wKGY2CbMC1Sx8mgqt1nOpl4yZPw"
+  },
+  "pubKeyCredParams": [
+    {
+      "type": "public-key",
+      "alg": -7
+    },
+    {
+      "type": "public-key",
+      "alg": -37
+    },
+    {
+      "type": "public-key",
+      "alg": -257
+    }
+  ]
+}
+
+── 2. 公開鍵登録 ──
+Request:
+{
+  "type": "public-key",
+  "id": "G7topVLRjOP9bDVVFEbozQ",
+  "rawId": "G7topVLRjOP9bDVVFEbozQ",
+  "authenticatorAttachment": "platform",
+  "clientExtensionResults": null,
+  "response": {
+    "attestationObject": "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViUwgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzNBAAAAAOuUU2H8iQHCXpIc4a7Hp8sAEBu7aKVS0Yzj_Ww1VRRG6M2lAyYgASFYIOlXxPV0eyq3pcqIt2d2Mg1Vc_7lcb3HVfTi3FX9FjY2AQIiWCAgGplkqolMgYwgyIJ1vcl9w0NbZaqnXEKD6IdolHFc5A",
+    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiN1h2ekJMSktBOGFGeUJyMEhXYjJkUnZzaFhUQUhzMmw2dzJLR0dGT0otbyIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+    "transports": [
+      "internal"
+    ]
+  }
+}
+
+POST /api/v1/registration
+
+Response:
+{
+  "status": "ok"
+}
