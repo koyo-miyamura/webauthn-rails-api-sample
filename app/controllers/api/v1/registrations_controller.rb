@@ -23,11 +23,13 @@ class Api::V1::RegistrationsController < ApplicationController
     begin
       webauthn_credential.verify(cached_challenge)
 
-      user_identity.create_user_webauthn_credential!(
+      credential = user_identity.user_webauthn_credential || user_identity.build_user_webauthn_credential
+      credential.update!(
         credential_id: webauthn_credential.id,
         public_key: webauthn_credential.public_key
       )
 
+      Rails.cache.delete(cache_key(user_identity))
       render json: { status: "ok" }, status: :ok
     rescue WebAuthn::Error => e
       render json: { error: e.message }, status: :unprocessable_entity
