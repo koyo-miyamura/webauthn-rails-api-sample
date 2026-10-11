@@ -26,13 +26,18 @@ class Api::V1::RegistrationsController < ApplicationController
     begin
       webauthn_credential.verify(cached_challenge)
 
+      # 並行リクエスト対策としてキャッシュから削除できなければエラーを返す
+      unless Rails.cache.delete(cache_key(user_identity))
+        return render json: { error: "Registration request is no longer available" },
+          status: :unprocessable_entity
+      end
+
       credential = user_identity.user_webauthn_credential || user_identity.build_user_webauthn_credential
       credential.update!(
         credential_id: webauthn_credential.id,
         public_key: webauthn_credential.public_key
       )
 
-      Rails.cache.delete(cache_key(user_identity))
       render json: { status: "ok" }, status: :ok
     rescue WebAuthn::Error => e
       render json: { error: e.message }, status: :unprocessable_entity
