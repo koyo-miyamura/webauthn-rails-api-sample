@@ -4,16 +4,16 @@ POST /api/v1/registration/options
 
 Response:
 {
-  "challenge": "7XvzBLJKA8aFyBr0HWb2dRvshXTAHs2l6w2KGGFOJ-o",
+  "challenge": "9iwnsGaVKhGmtgTBziKvnsNJcgTW8OMgcAApBcQIIk4",
   "timeout": 120000,
   "extensions": {},
   "rp": {
     "name": "Example Inc."
   },
   "user": {
-    "name": "usercode--FPuR9WXSb8rT0p4NEIYhOloG0hcYazZbl6CflnbfXQ-UP3g5u1G_NVJ9u0wKGY2CbMC1Sx8mgqt1nOpl4yZPw",
-    "id": "-FPuR9WXSb8rT0p4NEIYhOloG0hcYazZbl6CflnbfXQ-UP3g5u1G_NVJ9u0wKGY2CbMC1Sx8mgqt1nOpl4yZPw",
-    "displayName": "usercode--FPuR9WXSb8rT0p4NEIYhOloG0hcYazZbl6CflnbfXQ-UP3g5u1G_NVJ9u0wKGY2CbMC1Sx8mgqt1nOpl4yZPw"
+    "name": "usercode-vO1Co8Y0N6_J-fHsrFtoaQ2a5lG5d7nnAYUAtQzadgmaBm6piOtCrwSUNsxEzj2ro409pXA0bswylQw8TeU6tg",
+    "id": "vO1Co8Y0N6_J-fHsrFtoaQ2a5lG5d7nnAYUAtQzadgmaBm6piOtCrwSUNsxEzj2ro409pXA0bswylQw8TeU6tg",
+    "displayName": "usercode-vO1Co8Y0N6_J-fHsrFtoaQ2a5lG5d7nnAYUAtQzadgmaBm6piOtCrwSUNsxEzj2ro409pXA0bswylQw8TeU6tg"
   },
   "pubKeyCredParams": [
     {
@@ -28,23 +28,53 @@ Response:
       "type": "public-key",
       "alg": -257
     }
-  ]
+  ],
+  "authenticatorSelection": {
+    "residentKey": "required"
+  }
 }
 
 ── 2. 公開鍵登録 ──
 Request:
 {
   "type": "public-key",
-  "id": "G7topVLRjOP9bDVVFEbozQ",
-  "rawId": "G7topVLRjOP9bDVVFEbozQ",
+  "id": "9J7FF96koFNLQk2pf0VTvg",
+  "rawId": "9J7FF96koFNLQk2pf0VTvg",
   "authenticatorAttachment": "platform",
   "clientExtensionResults": null,
   "response": {
-    "attestationObject": "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViUwgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzNBAAAAAOuUU2H8iQHCXpIc4a7Hp8sAEBu7aKVS0Yzj_Ww1VRRG6M2lAyYgASFYIOlXxPV0eyq3pcqIt2d2Mg1Vc_7lcb3HVfTi3FX9FjY2AQIiWCAgGplkqolMgYwgyIJ1vcl9w0NbZaqnXEKD6IdolHFc5A",
-    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiN1h2ekJMSktBOGFGeUJyMEhXYjJkUnZzaFhUQUhzMmw2dzJLR0dGT0otbyIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+    "attestationObject": "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViUwgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzNBAAAAAJWTCN_9RdhWd9XNl2g7jOkAEPSexRfepKBTS0JNqX9FU76lAyYgASFYIBuQ1CsJn1WkKVJdt2u7MYev015yTFFIvAhexDzVfSJaAQIiWCAQ2SCzq-Em4MBA_xM4kxqPotvpntU3LzSuzHCH6YDfRw",
+    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiOWl3bnNHYVZLaEdtdGdUQnppS3Zuc05KY2dUVzhPTWdjQUFwQmNRSUlrNCIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
     "transports": [
       "internal"
     ]
+  }
+}
+
+Decoded clientDataJSON:
+{
+  "type": "webauthn.create",
+  "challenge": "9iwnsGaVKhGmtgTBziKvnsNJcgTW8OMgcAApBcQIIk4",
+  "origin": "https://auth.example.com"
+}
+
+Decoded authenticatorData (attestationObject.authData):
+{
+  "rpIdHash": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzM",
+  "flags": {
+    "userPresent": true,
+    "userVerified": false,
+    "backupEligibility": false,
+    "backupState": false,
+    "attestedCredentialDataIncluded": true,
+    "extensionDataIncluded": false
+  },
+  "signCount": 0,
+  "attestedCredentialData": {
+    "aaguid": "959308df-fd45-d856-77d5-cd97683b8ce9",
+    "credentialId": "9J7FF96koFNLQk2pf0VTvg",
+    "publicKey": "pQMmIAEhWCAbkNQrCZ9VpClSXbdruzGHr9NeckxRSLwIXsQ81X0iWgECIlggENkgs6vhJuDAQP8TOJMaj6Lb6Z7VNy80rsxwh-mA30c",
+    "algorithm": "ES256"
   }
 }
 
@@ -53,4 +83,65 @@ POST /api/v1/registration
 Response:
 {
   "status": "ok"
+}
+
+── 3. 復元用 options 取得 ──
+POST /api/v1/recovery/options
+
+Response:
+{
+  "recovery_id": "e450507174f061afd3fb8cefc40cdc4c6b4c9b7d632a3e449becd294d36a4371",
+  "options": {
+    "challenge": "cx08Y8Jn5KdH9MxferWLoL1TJB8A1xrHIqp6rHybVj0",
+    "timeout": 120000,
+    "extensions": {},
+    "allowCredentials": []
+  }
+}
+
+── 4. 公開鍵を使った検証（復元） ──
+Request:
+{
+  "recovery_id": "e450507174f061afd3fb8cefc40cdc4c6b4c9b7d632a3e449becd294d36a4371",
+  "credential": {
+    "type": "public-key",
+    "id": "9J7FF96koFNLQk2pf0VTvg",
+    "rawId": "9J7FF96koFNLQk2pf0VTvg",
+    "clientExtensionResults": null,
+    "authenticatorAttachment": "platform",
+    "response": {
+      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiY3gwOFk4Sm41S2RIOU14ZmVyV0xvTDFUSkI4QTF4ckhJcXA2ckh5YlZqMCIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+      "authenticatorData": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzMRAAAAAQ",
+      "signature": "MEQCIE_HldSW0lIPCNlII-wLmnK0M6nQESOMxuY3QDXFTszQAiAVRPmGxNGmjrWFmLRM5QPpCmN3V10h6ZQCQamdwaGLow",
+      "userHandle": null
+    }
+  }
+}
+
+Decoded clientDataJSON:
+{
+  "type": "webauthn.get",
+  "challenge": "cx08Y8Jn5KdH9MxferWLoL1TJB8A1xrHIqp6rHybVj0",
+  "origin": "https://auth.example.com"
+}
+
+Decoded authenticatorData:
+{
+  "rpIdHash": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzM",
+  "flags": {
+    "userPresent": true,
+    "userVerified": false,
+    "backupEligibility": false,
+    "backupState": true,
+    "attestedCredentialDataIncluded": false,
+    "extensionDataIncluded": false
+  },
+  "signCount": 1
+}
+
+POST /api/v1/recovery
+
+Response:
+{
+  "success": true
 }
