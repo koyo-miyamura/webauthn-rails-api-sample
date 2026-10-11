@@ -1,0 +1,48 @@
+# WebAuthn Rails API Sample
+
+WebAuthn の鍵をアカウント復元に使うことを想定した Rails API サンプルです。`WebAuthn::FakeClient` で公開鍵登録と署名検証を試せます。
+
+## 起動
+
+Docker と Docker Compose が必要です。ホストに Ruby・Rails をインストールする必要はありません。リポジトリのルートで実行してください。
+
+```bash
+docker compose up --build --wait
+```
+
+DB と seed は自動で準備され、API は `http://localhost:3000` に起動します。ポートを変える場合は、起動コマンドの先頭に `APP_PORT=3001` などを付けてください。
+
+## 動作確認
+
+### 登録から復元まで
+
+```bash
+docker compose exec web bin/rails runner lib/tasks/client_request.rb
+```
+
+登録用 options 取得 → 公開鍵登録 → 復元用 options 取得 → 署名検証を実行します。すべて HTTP 200、最後に `{"success":true}` が返れば成功です。再実行すると登録済みの鍵を置き換えます。
+
+### 登録を省いた復元
+
+```bash
+docker compose exec web bin/rails runner lib/tasks/client_recover_failure.rb
+```
+
+クライアント内だけで生成した未登録の鍵で復元を試みます。復元用 options 取得が HTTP 200、復元が HTTP 404・`{"error":"Credential not found"}` なら検証成功です。先に成功ケースを実行する必要はありません。
+
+出力例: [成功時](lib/tasks/sample_result.log) / [未登録の鍵による失敗時](lib/tasks/sample_failure.log)
+
+## 開発・停止
+
+ソースコードと Gemfile はホストのものを使用します。Gemfile の変更後は次を実行してください。
+
+```bash
+docker compose exec web bundle install
+docker compose restart web
+```
+
+ログの確認は `docker compose logs -f web`、停止は `docker compose down` で行えます。
+
+DB と gem は Docker のボリュームに保持されます。ホストの `storage/` とは別で、`docker compose down --volumes` を実行すると削除されます。
+
+設計上の前提・制約は [設計書](doc/design.md)、環境設定は [compose.yml](compose.yml) と [Dockerfile.dev](Dockerfile.dev) を参照してください。
