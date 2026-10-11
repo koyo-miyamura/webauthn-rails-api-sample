@@ -6,6 +6,9 @@ class Api::V1::RegistrationsController < ApplicationController
       user: {
         id: user_identity.webauthn_user_id,
         name: "usercode-#{user_identity.webauthn_user_id}"
+      },
+      authenticator_selection: {
+        resident_key: "required"
       }
     )
 
