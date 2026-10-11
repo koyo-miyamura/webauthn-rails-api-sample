@@ -16,7 +16,11 @@ class Api::V1::RecoveriesController < ApplicationController
     recovery_id = params[:recovery_id]
     webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
 
-    user_webauthn_credential = UserWebauthnCredential.find_by!(credential_id: webauthn_credential.id)
+    user_webauthn_credential = UserWebauthnCredential.find_by(credential_id: webauthn_credential.id)
+    unless user_webauthn_credential
+      return render json: { error: "Credential not found" }, status: :not_found
+    end
+
     get_options_challenge = Rails.cache.read(cache_key(recovery_id))
 
     begin
