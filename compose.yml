@@ -1,0 +1,30 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        bundle check || bundle install
+        bin/rails db:prepare db:seed
+        exec bin/rails server -b 0.0.0.0
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - .:/rails
+      - bundle:/usr/local/bundle
+      - storage:/rails/storage
+    tmpfs:
+      - /rails/tmp
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:3000/up"]
+      interval: 5s
+      timeout: 5s
+      start_period: 60s
+      retries: 12
+
+volumes:
+  bundle:
+  storage:
