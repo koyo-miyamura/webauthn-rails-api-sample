@@ -19,9 +19,14 @@ class Api::V1::RegistrationsController < ApplicationController
   end
 
   def create
-    webauthn_credential = WebAuthn::Credential.from_create(params)
     user_identity = current_user.user_webauthn_identity
-    cached_challenge = Rails.cache.read(cache_key(user_identity))
+    cached_challenge = user_identity && Rails.cache.read(cache_key(user_identity))
+    unless cached_challenge
+      return render json: { error: "Registration request is no longer available" },
+        status: :unprocessable_entity
+    end
+
+    webauthn_credential = WebAuthn::Credential.from_create(params)
 
     begin
       webauthn_credential.verify(cached_challenge)
