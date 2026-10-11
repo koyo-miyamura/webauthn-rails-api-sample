@@ -1,6 +1,7 @@
 class UserWebauthnCredential < ApplicationRecord
   belongs_to :user_webauthn_identity,
     foreign_key: :webauthn_user_id,
+    primary_key: :webauthn_user_id,
     inverse_of: :user_webauthn_credential
 
   validates :webauthn_user_id, uniqueness: true

@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema[8.1].define(version: 2026_10_08_074331) do
   create_table "user_webauthn_credentials", force: :cascade do |t|
-    t.integer "webauthn_user_id", null: false
+    t.string "webauthn_user_id", null: false
     t.string "credential_id", null: false
     t.string "public_key", null: false
     t.datetime "created_at", null: false
@@ -35,6 +35,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_074331) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "user_webauthn_credentials", "user_webauthn_identities", column: "webauthn_user_id"
+  add_foreign_key "user_webauthn_credentials", "user_webauthn_identities", column: "webauthn_user_id", primary_key: "webauthn_user_id"
   add_foreign_key "user_webauthn_identities", "users"
 end
