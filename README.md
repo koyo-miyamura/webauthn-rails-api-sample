@@ -41,8 +41,6 @@ docker compose exec web bundle install
 docker compose restart web
 ```
 
-ログの確認は `docker compose logs -f web`、停止は `docker compose down` で行えます。
-
 DB と gem は Docker のボリュームに保持されます。ホストの `storage/` とは別で、`docker compose down --volumes` を実行すると削除されます。
 
-設計上の前提・制約は [設計書](doc/design.md)、環境設定は [compose.yml](compose.yml) と [Dockerfile.dev](Dockerfile.dev) を参照してください。
+設計上の前提・制約は [設計書](doc/design.md) を参照してください。
