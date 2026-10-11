@@ -27,7 +27,8 @@ class Api::V1::RecoveriesController < ApplicationController
       webauthn_credential.verify(
         get_options_challenge,
         public_key: user_webauthn_credential.public_key,
-        sign_count: 0 # sign_count は任意なので今回は検証しない
+        sign_count: 0, # sign_count は任意なので今回は検証しない
+        user_presence: false # ユーザー認証なしで検証するので、UP フラグの検証スキップ
       )
 
       # 並行リクエスト対策としてキャッシュから削除できなければエラーを返す
