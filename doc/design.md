@@ -11,7 +11,7 @@
 ```mermaid
 erDiagram
     users ||..o| user_webauthn_identities : has_one
-    user_webauthn_identities ||..o| user_webauthn_credentials : has_one
+    user_webauthn_identities ||..o{ user_webauthn_credentials : has_many
 
     users {
         integer id PK
@@ -25,15 +25,15 @@ erDiagram
 
     user_webauthn_credentials {
         integer id PK
-        string webauthn_user_id FK,UK
+        string webauthn_user_id FK
         string credential_id UK
-        string public_key
+        string public_key UK
     }
 ```
 
 各テーブルの `created_at`・`updated_at` は図から省略しています。
 
-サンプルを簡潔にするため、credential は 1 ユーザーにつき 1 件です。identity は登録用 options 取得時に作るため、公開鍵登録前は credential が存在しません。
+credential は 1 ユーザーにつき複数件持てます。`credential_id` と `public_key` はそれぞれ全体で一意で、どちらかが登録済みのものと重複する鍵は登録できません。登録用 options の `excludeCredentials` に登録済みの `credential_id` を含めるため、同じ認証器の二重登録はクライアント側で弾かれます。identity は登録用 options 取得時に作るため、公開鍵登録前は credential が存在しません。
 
 credential と identity は、主キー `id` ではなく WebAuthn 用のユーザー ID `webauthn_user_id` で紐づきます。詳細は [スキーマ](../db/schema.rb) を参照してください。
 

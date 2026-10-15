@@ -20,7 +20,15 @@ DB と seed は自動で準備され、API は `http://localhost:3000` に起動
 docker compose exec web bin/rails runner lib/tasks/client_request.rb
 ```
 
-登録用 options 取得 → 公開鍵登録 → 復元用 options 取得 → 署名検証を実行します。すべて HTTP 200、最後に `{"success":true}` が返れば成功です。再実行すると登録済みの鍵を置き換えます。
+登録用 options 取得 → 公開鍵登録 → 復元用 options 取得 → 署名検証を実行します。すべて HTTP 200、最後に `{"success":true}` が返れば成功です。再実行すると新しい鍵が追加登録されます。
+
+### 登録から復元までを 2 回実行（複数の鍵）
+
+```bash
+docker compose exec web bin/rails runner lib/tasks/client_request_twice.rb
+```
+
+別々の鍵で登録 → 復元を 2 回実行し、最後に 1 つ目の鍵で再度復元します。2 回目の登録用 options の `excludeCredentials` に 1 つ目の鍵が含まれ、すべて HTTP 200 なら成功です。1 ユーザーが複数の鍵を保持できることを確認します。
 
 ### 登録を省いた復元
 
@@ -30,7 +38,7 @@ docker compose exec web bin/rails runner lib/tasks/client_recover_failure.rb
 
 クライアント内だけで生成した未登録の鍵で復元を試みます。復元用 options 取得が HTTP 200、復元が HTTP 404・`{"error":"Credential not found"}` なら検証成功です。先に成功ケースを実行する必要はありません。
 
-出力例: [成功時](lib/tasks/sample_result.log) / [未登録の鍵による失敗時](lib/tasks/sample_failure.log)
+出力例: [成功時](lib/tasks/sample_result.log) / [2 回実行時](lib/tasks/sample_result_twice.log) / [未登録の鍵による失敗時](lib/tasks/sample_failure.log)
 
 ## 開発・停止
 

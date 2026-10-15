@@ -1,0 +1,418 @@
+
+━━ 1 回目: 1 つ目の鍵で登録 → 復元 ━━
+
+── 1. 登録用 options 取得 ──
+POST /api/v1/registration/options
+
+HTTP 200
+
+Response:
+{
+  "challenge": "vizcMI3ii_6JEdtrfWZGs1SKnlx9gYmwsLi4qv87WOA",
+  "timeout": 120000,
+  "extensions": {},
+  "rp": {
+    "name": "Example Inc."
+  },
+  "user": {
+    "name": "usercode-5HwBogxkwQsvyyYKKDIV37-1qlGMLcHW3G1kVgabQCY0C4k4Pkg9NTfo_2uDsvPbEsz_gtZBCYn788GsGu7V7w",
+    "id": "5HwBogxkwQsvyyYKKDIV37-1qlGMLcHW3G1kVgabQCY0C4k4Pkg9NTfo_2uDsvPbEsz_gtZBCYn788GsGu7V7w",
+    "displayName": "usercode-5HwBogxkwQsvyyYKKDIV37-1qlGMLcHW3G1kVgabQCY0C4k4Pkg9NTfo_2uDsvPbEsz_gtZBCYn788GsGu7V7w"
+  },
+  "pubKeyCredParams": [
+    {
+      "type": "public-key",
+      "alg": -7
+    },
+    {
+      "type": "public-key",
+      "alg": -37
+    },
+    {
+      "type": "public-key",
+      "alg": -257
+    }
+  ],
+  "authenticatorSelection": {
+    "residentKey": "required"
+  },
+  "excludeCredentials": []
+}
+
+── 2. 公開鍵登録 ──
+
+Request:
+{
+  "type": "public-key",
+  "id": "A6vLrOI-JZKiCicR1P8QFA",
+  "rawId": "A6vLrOI-JZKiCicR1P8QFA",
+  "authenticatorAttachment": "platform",
+  "clientExtensionResults": null,
+  "response": {
+    "attestationObject": "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViUwgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzNBAAAAAK-2qC2IHYhuJs0cDxfWlTYAEAOry6ziPiWSogonEdT_EBSlAyYgASFYID47QzeobgNlZSh5ZG_guWO0Txm4j47fwyHa1pSNXW5PAQIiWCB2aJ5ala2t92fCwnnwb85HzOWqFQs4em9MNHdwskM9Xg",
+    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoidml6Y01JM2lpXzZKRWR0cmZXWkdzMVNLbmx4OWdZbXdzTGk0cXY4N1dPQSIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+    "transports": [
+      "internal"
+    ]
+  }
+}
+
+Decoded clientDataJSON:
+{
+  "type": "webauthn.create",
+  "challenge": "vizcMI3ii_6JEdtrfWZGs1SKnlx9gYmwsLi4qv87WOA",
+  "origin": "https://auth.example.com"
+}
+
+Decoded authenticatorData (attestationObject.authData):
+{
+  "rpIdHash": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzM",
+  "flags": {
+    "userPresent": true,
+    "reservedForFutureUse1": 0,
+    "userVerified": false,
+    "backupEligibility": false,
+    "backupState": false,
+    "reservedForFutureUse2": 0,
+    "attestedCredentialDataIncluded": true,
+    "extensionDataIncluded": false
+  },
+  "signCount": 0,
+  "attestedCredentialData": {
+    "aaguid": "afb6a82d-881d-886e-26cd-1c0f17d69536",
+    "credentialId": "A6vLrOI-JZKiCicR1P8QFA",
+    "algorithm": "ES256",
+    "credentialPublicKey": {
+      "alg": -7,
+      "crv": 1,
+      "x": "PjtDN6huA2VlKHlkb-C5Y7RPGbiPjt_DIdrWlI1dbk8",
+      "kty": 2,
+      "y": "dmieWpWtrfdnwsJ58G_OR8zlqhULOHpvTDR3cLJDPV4"
+    }
+  }
+}
+
+POST /api/v1/registration
+
+HTTP 200
+
+Response:
+{
+  "status": "ok"
+}
+
+── 3. 復元用 options 取得 ──
+POST /api/v1/recovery/options
+
+HTTP 200
+
+Response:
+{
+  "recovery_id": "3cf7fa8932e53c328d50344a6046c0b317bea892e865e3b830795205ed3131ca",
+  "options": {
+    "challenge": "2PLmX_YCE8ulGZwHDKsou9feFw6UCVCZi_5-dWWZrQQ",
+    "timeout": 120000,
+    "extensions": {},
+    "allowCredentials": []
+  }
+}
+
+── 4. 公開鍵を使った検証（復元） ──
+
+Request:
+{
+  "recovery_id": "3cf7fa8932e53c328d50344a6046c0b317bea892e865e3b830795205ed3131ca",
+  "credential": {
+    "type": "public-key",
+    "id": "A6vLrOI-JZKiCicR1P8QFA",
+    "rawId": "A6vLrOI-JZKiCicR1P8QFA",
+    "clientExtensionResults": null,
+    "authenticatorAttachment": "platform",
+    "response": {
+      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiMlBMbVhfWUNFOHVsR1p3SERLc291OWZlRnc2VUNWQ1ppXzUtZFdXWnJRUSIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+      "authenticatorData": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzMRAAAAAQ",
+      "signature": "MEUCIHK5DoNW7wZEELLio5s-CzGV9oKiuUtAidNYWAvrB6bxAiEAuU9uv51K1SB-O_LMQMzxT-qpttzjd_pprhCAAmgA5d0",
+      "userHandle": null
+    }
+  }
+}
+
+Decoded clientDataJSON:
+{
+  "type": "webauthn.get",
+  "challenge": "2PLmX_YCE8ulGZwHDKsou9feFw6UCVCZi_5-dWWZrQQ",
+  "origin": "https://auth.example.com"
+}
+
+Decoded authenticatorData:
+{
+  "rpIdHash": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzM",
+  "flags": {
+    "userPresent": true,
+    "reservedForFutureUse1": 0,
+    "userVerified": false,
+    "backupEligibility": false,
+    "backupState": true,
+    "reservedForFutureUse2": 0,
+    "attestedCredentialDataIncluded": false,
+    "extensionDataIncluded": false
+  },
+  "signCount": 1
+}
+
+POST /api/v1/recovery
+
+HTTP 200
+
+Response:
+{
+  "success": true
+}
+
+━━ 2 回目: 2 つ目の鍵で登録 → 復元 ━━
+登録用 options の excludeCredentials に 1 つ目の鍵が含まれます。
+
+── 5. 登録用 options 取得 ──
+POST /api/v1/registration/options
+
+HTTP 200
+
+Response:
+{
+  "challenge": "mUVoO4ougS97TKrPuOADw04vUrKRZiNeAaNicckjRRA",
+  "timeout": 120000,
+  "extensions": {},
+  "rp": {
+    "name": "Example Inc."
+  },
+  "user": {
+    "name": "usercode-5HwBogxkwQsvyyYKKDIV37-1qlGMLcHW3G1kVgabQCY0C4k4Pkg9NTfo_2uDsvPbEsz_gtZBCYn788GsGu7V7w",
+    "id": "5HwBogxkwQsvyyYKKDIV37-1qlGMLcHW3G1kVgabQCY0C4k4Pkg9NTfo_2uDsvPbEsz_gtZBCYn788GsGu7V7w",
+    "displayName": "usercode-5HwBogxkwQsvyyYKKDIV37-1qlGMLcHW3G1kVgabQCY0C4k4Pkg9NTfo_2uDsvPbEsz_gtZBCYn788GsGu7V7w"
+  },
+  "pubKeyCredParams": [
+    {
+      "type": "public-key",
+      "alg": -7
+    },
+    {
+      "type": "public-key",
+      "alg": -37
+    },
+    {
+      "type": "public-key",
+      "alg": -257
+    }
+  ],
+  "authenticatorSelection": {
+    "residentKey": "required"
+  },
+  "excludeCredentials": [
+    {
+      "type": "public-key",
+      "id": "A6vLrOI-JZKiCicR1P8QFA"
+    }
+  ]
+}
+
+── 6. 公開鍵登録 ──
+
+Request:
+{
+  "type": "public-key",
+  "id": "8g0Ai1F8DjFAkDARHrc8Tw",
+  "rawId": "8g0Ai1F8DjFAkDARHrc8Tw",
+  "authenticatorAttachment": "platform",
+  "clientExtensionResults": null,
+  "response": {
+    "attestationObject": "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViUwgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzNBAAAAAK-2qC2IHYhuJs0cDxfWlTYAEPINAItRfA4xQJAwER63PE-lAyYgASFYIGoG9Y7DSmfKjERmkvxXdMgtBgFdfqZWl5R1tT42K7JjAQIiWCAKPDvHri0ylFUwOdknchVqA6efLCkyZmjKoT_BCt2S7A",
+    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoibVVWb080b3VnUzk3VEtyUHVPQUR3MDR2VXJLUlppTmVBYU5pY2NralJSQSIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+    "transports": [
+      "internal"
+    ]
+  }
+}
+
+Decoded clientDataJSON:
+{
+  "type": "webauthn.create",
+  "challenge": "mUVoO4ougS97TKrPuOADw04vUrKRZiNeAaNicckjRRA",
+  "origin": "https://auth.example.com"
+}
+
+Decoded authenticatorData (attestationObject.authData):
+{
+  "rpIdHash": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzM",
+  "flags": {
+    "userPresent": true,
+    "reservedForFutureUse1": 0,
+    "userVerified": false,
+    "backupEligibility": false,
+    "backupState": false,
+    "reservedForFutureUse2": 0,
+    "attestedCredentialDataIncluded": true,
+    "extensionDataIncluded": false
+  },
+  "signCount": 0,
+  "attestedCredentialData": {
+    "aaguid": "afb6a82d-881d-886e-26cd-1c0f17d69536",
+    "credentialId": "8g0Ai1F8DjFAkDARHrc8Tw",
+    "algorithm": "ES256",
+    "credentialPublicKey": {
+      "alg": -7,
+      "crv": 1,
+      "x": "agb1jsNKZ8qMRGaS_Fd0yC0GAV1-plaXlHW1PjYrsmM",
+      "kty": 2,
+      "y": "Cjw7x64tMpRVMDnZJ3IVagOnnywpMmZoyqE_wQrdkuw"
+    }
+  }
+}
+
+POST /api/v1/registration
+
+HTTP 200
+
+Response:
+{
+  "status": "ok"
+}
+
+── 7. 復元用 options 取得 ──
+POST /api/v1/recovery/options
+
+HTTP 200
+
+Response:
+{
+  "recovery_id": "52a9f5e3dc1807f43a9dc752bee6d0c35dcfe3988ddf17243017786d77df9b40",
+  "options": {
+    "challenge": "b4FNVrF5nc841cIwEnfbJ9vwrEqrU24_2gY7qogqxXk",
+    "timeout": 120000,
+    "extensions": {},
+    "allowCredentials": []
+  }
+}
+
+── 8. 公開鍵を使った検証（復元） ──
+
+Request:
+{
+  "recovery_id": "52a9f5e3dc1807f43a9dc752bee6d0c35dcfe3988ddf17243017786d77df9b40",
+  "credential": {
+    "type": "public-key",
+    "id": "8g0Ai1F8DjFAkDARHrc8Tw",
+    "rawId": "8g0Ai1F8DjFAkDARHrc8Tw",
+    "clientExtensionResults": null,
+    "authenticatorAttachment": "platform",
+    "response": {
+      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiYjRGTlZyRjVuYzg0MWNJd0VuZmJKOXZ3ckVxclUyNF8yZ1k3cW9ncXhYayIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+      "authenticatorData": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzMRAAAAAQ",
+      "signature": "MEYCIQDq58NWXo_dH2_nRmIPsf85yyecZWvcsT9GNXC_mAK5HgIhAI7hpVKHB7fJTy5bedY9Z1CLndJAxJx97nXDK8ceKw_N",
+      "userHandle": null
+    }
+  }
+}
+
+Decoded clientDataJSON:
+{
+  "type": "webauthn.get",
+  "challenge": "b4FNVrF5nc841cIwEnfbJ9vwrEqrU24_2gY7qogqxXk",
+  "origin": "https://auth.example.com"
+}
+
+Decoded authenticatorData:
+{
+  "rpIdHash": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzM",
+  "flags": {
+    "userPresent": true,
+    "reservedForFutureUse1": 0,
+    "userVerified": false,
+    "backupEligibility": false,
+    "backupState": true,
+    "reservedForFutureUse2": 0,
+    "attestedCredentialDataIncluded": false,
+    "extensionDataIncluded": false
+  },
+  "signCount": 1
+}
+
+POST /api/v1/recovery
+
+HTTP 200
+
+Response:
+{
+  "success": true
+}
+
+━━ 追加確認: 2 つ目の鍵を登録した後も 1 つ目の鍵で復元できる ━━
+
+── 9. 復元用 options 取得 ──
+POST /api/v1/recovery/options
+
+HTTP 200
+
+Response:
+{
+  "recovery_id": "981cc0ececff251fbcb582463f820b0bd2d71382d84f1ca9442f8fad5edae962",
+  "options": {
+    "challenge": "rrMn2kD10fXM3eG-T1axbmaszkVGV7lrh-erYBNOdxU",
+    "timeout": 120000,
+    "extensions": {},
+    "allowCredentials": []
+  }
+}
+
+── 10. 公開鍵を使った検証（復元） ──
+
+Request:
+{
+  "recovery_id": "981cc0ececff251fbcb582463f820b0bd2d71382d84f1ca9442f8fad5edae962",
+  "credential": {
+    "type": "public-key",
+    "id": "A6vLrOI-JZKiCicR1P8QFA",
+    "rawId": "A6vLrOI-JZKiCicR1P8QFA",
+    "clientExtensionResults": null,
+    "authenticatorAttachment": "platform",
+    "response": {
+      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoicnJNbjJrRDEwZlhNM2VHLVQxYXhibWFzemtWR1Y3bHJoLWVyWUJOT2R4VSIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+      "authenticatorData": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzMRAAAAAg",
+      "signature": "MEUCIQCvBuIEyMPj4ns7z6gGZ0wSXfTsSGddYtP6pb0Li9sNbwIgOf_a48vS4LopWlnRoqC75IFuQPGa9uhdL7yyKwkyEc4",
+      "userHandle": null
+    }
+  }
+}
+
+Decoded clientDataJSON:
+{
+  "type": "webauthn.get",
+  "challenge": "rrMn2kD10fXM3eG-T1axbmaszkVGV7lrh-erYBNOdxU",
+  "origin": "https://auth.example.com"
+}
+
+Decoded authenticatorData:
+{
+  "rpIdHash": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzM",
+  "flags": {
+    "userPresent": true,
+    "reservedForFutureUse1": 0,
+    "userVerified": false,
+    "backupEligibility": false,
+    "backupState": true,
+    "reservedForFutureUse2": 0,
+    "attestedCredentialDataIncluded": false,
+    "extensionDataIncluded": false
+  },
+  "signCount": 2
+}
+
+POST /api/v1/recovery
+
+HTTP 200
+
+Response:
+{
+  "success": true
+}
+
+検証成功: 2 つの鍵を登録し、どちらの鍵でも復元できました。

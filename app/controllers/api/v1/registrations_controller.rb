@@ -9,7 +9,8 @@ class Api::V1::RegistrationsController < ApplicationController
       },
       authenticator_selection: {
         resident_key: "required"
-      }
+      },
+      exclude: user_identity.user_webauthn_credentials.pluck(:credential_id)
     )
 
     # チャレンジの保存。Redis や Cookie などでも良い。
@@ -37,14 +38,13 @@ class Api::V1::RegistrationsController < ApplicationController
           status: :unprocessable_entity
       end
 
-      credential = user_identity.user_webauthn_credential || user_identity.build_user_webauthn_credential
-      credential.update!(
+      user_identity.user_webauthn_credentials.create!(
         credential_id: webauthn_credential.id,
         public_key: webauthn_credential.public_key
       )
 
       render json: { status: "ok" }, status: :ok
-    rescue WebAuthn::Error => e
+    rescue WebAuthn::Error, ActiveRecord::RecordInvalid => e
       render json: { error: e.message }, status: :unprocessable_entity
     end
   end

@@ -18,7 +18,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_074331) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["credential_id"], name: "index_user_webauthn_credentials_on_credential_id", unique: true
-    t.index ["webauthn_user_id"], name: "index_user_webauthn_credentials_on_webauthn_user_id", unique: true
+    t.index ["public_key"], name: "index_user_webauthn_credentials_on_public_key", unique: true
+    t.index ["webauthn_user_id"], name: "index_user_webauthn_credentials_on_webauthn_user_id"
   end
 
   create_table "user_webauthn_identities", force: :cascade do |t|
