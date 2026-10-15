@@ -27,7 +27,7 @@ class Api::V1::RecoveriesController < ApplicationController
       webauthn_credential.verify(
         get_options_challenge,
         public_key: user_webauthn_credential.public_key,
-        sign_count: 0, # sign_count は任意なので今回は検証しない
+        sign_count: user_webauthn_credential.sign_count,
         user_presence: false # ユーザー認証なしで検証するので、UP フラグの検証スキップ
       )
 
@@ -36,6 +36,8 @@ class Api::V1::RecoveriesController < ApplicationController
         return render json: { error: "Recovery request is no longer available" },
           status: :unprocessable_entity
       end
+
+      user_webauthn_credential.update!(sign_count: webauthn_credential.sign_count)
 
       # 今回は省略するが、実際にはここでログイン処理などを行う
 

@@ -40,10 +40,16 @@ class Api::V1::RegistrationsController < ApplicationController
 
       user_identity.user_webauthn_credentials.create!(
         credential_id: webauthn_credential.id,
-        public_key: webauthn_credential.public_key
+        public_key: webauthn_credential.public_key,
+        sign_count: webauthn_credential.sign_count
       )
 
       render json: { status: "ok" }, status: :ok
+    rescue WebAuthn::SignCountVerificationError => e
+      # sign_count の検証に失敗した時エラーにするかはアプリケーションの方針次第（同期パスキーなどのケースではエラーにしないこともある）
+      # エラーにしない場合は以下
+      # render json: { status: "ok" }, status: :ok
+      render json: { error: e.message }, status: :unprocessable_entity
     rescue WebAuthn::Error, ActiveRecord::RecordInvalid => e
       render json: { error: e.message }, status: :unprocessable_entity
     end

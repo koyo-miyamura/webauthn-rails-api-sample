@@ -4,7 +4,7 @@
 
 登録は認証済みユーザーによる操作を想定しています。サンプルでは認証を省き、seed で用意した最初のユーザーを登録対象に固定しています。
 
-復元は未ログインを想定し、credential ID から登録済みの公開鍵を探して署名を検証します。復元成功後のログイン・トークン発行、署名カウンターの保存・更新は実装していません。入力不正などのエラーハンドリングも簡略化しています。
+復元は未ログインを想定し、credential ID から登録済みの公開鍵を探して署名を検証します。復元成功後のログイン・トークン発行は実装していません。入力不正などのエラーハンドリングも簡略化しています。
 
 ## DB 設計
 
@@ -28,12 +28,15 @@ erDiagram
         string webauthn_user_id FK
         string credential_id UK
         string public_key UK
+        integer sign_count
     }
 ```
 
 各テーブルの `created_at`・`updated_at` は図から省略しています。
 
 credential は 1 ユーザーにつき複数件持てます。`credential_id` と `public_key` はそれぞれ全体で一意で、どちらかが登録済みのものと重複する鍵は登録できません。登録用 options の `excludeCredentials` に登録済みの `credential_id` を含めるため、同じ認証器の二重登録はクライアント側で弾かれます。identity は登録用 options 取得時に作るため、公開鍵登録前は credential が存在しません。
+
+`sign_count` は認証器の署名カウンターです。登録時の値を保存し、復元のたびに認証器から受け取った値で更新します。復元時は保存値より大きい値だけを受け付けるため、鍵が複製された場合の再利用を検知できます。カウンターに対応しない認証器は常に 0 を返すので、保存値も 0 のまま検証を通過します。
 
 credential と identity は、主キー `id` ではなく WebAuthn 用のユーザー ID `webauthn_user_id` で紐づきます。詳細は [スキーマ](../db/schema.rb) を参照してください。
 
@@ -48,7 +51,7 @@ credential と identity は、主キー `id` ではなく WebAuthn 用のユー�
 | 1 | `/api/v1/registration/options` | `{}` | 登録用 options（`challenge`、`rp`、`user` など） |
 | 2 | `/api/v1/registration` | 登録レスポンスをリクエスト直下に格納 | 公開鍵を登録・更新し、`{"status":"ok"}` |
 | 3 | `/api/v1/recovery/options` | `{}` | `recovery_id` と復元用 `options` |
-| 4 | `/api/v1/recovery` | 手順 3 の `recovery_id` と、署名レスポンスを格納した `credential` | `{"success":true}` |
+| 4 | `/api/v1/recovery` | 手順 3 の `recovery_id` と、署名レスポンスを格納した `credential` | 署名カウンターを更新し、`{"success":true}` |
 
 登録用・復元用 options の `challenge` を、それぞれ次の手順で使用します。復元用 options は未登録でも取得でき、`allowCredentials` は空配列です。登録済みかどうかは手順 4 で判定します。
 
@@ -56,6 +59,7 @@ credential と identity は、主キー `id` ではなく WebAuthn 用のユー�
 | --- | --- | --- |
 | 登録時に登録用 options を未取得、またはチャレンジが期限切れ | 422 | `{"error":"Registration request is no longer available"}` |
 | 復元時に credential が未登録 | 404 | `{"error":"Credential not found"}` |
+| 復元時の署名カウンターが保存値以下 | 422 | `{"error":"WebAuthn::SignCountVerificationError"}` |
 | 検証処理で `WebAuthn::Error` が発生 | 422 | `{"error":"<e.message>"}` |
 | 検証後のチャレンジ削除に失敗 | 422 | `error` に `Registration request is no longer available` または `Recovery request is no longer available` |
 

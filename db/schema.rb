@@ -15,6 +15,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_074331) do
     t.string "webauthn_user_id", null: false
     t.string "credential_id", null: false
     t.string "public_key", null: false
+    t.integer "sign_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["credential_id"], name: "index_user_webauthn_credentials_on_credential_id", unique: true

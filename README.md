@@ -30,6 +30,14 @@ docker compose exec web bin/rails runner lib/tasks/client_request_twice.rb
 
 別々の鍵で登録 → 復元を 2 回実行し、最後に 1 つ目の鍵で再度復元します。2 回目の登録用 options の `excludeCredentials` に 1 つ目の鍵が含まれ、すべて HTTP 200 なら成功です。1 ユーザーが複数の鍵を保持できることを確認します。
 
+### 署名カウンター（sign_count）の検証
+
+```bash
+docker compose exec web bin/rails runner lib/tasks/client_sign_count.rb
+```
+
+登録後に復元を 2 回成功させ、次に 1 回目と同じ署名カウンターで復元を試みます。復元 2 回が HTTP 200、カウンターを戻した復元が HTTP 422・`{"error":"WebAuthn::SignCountVerificationError"}` なら検証成功です。最後に通常の復元が HTTP 200 で通ることも確認します。
+
 ### 登録を省いた復元
 
 ```bash
@@ -38,7 +46,7 @@ docker compose exec web bin/rails runner lib/tasks/client_recover_failure.rb
 
 クライアント内だけで生成した未登録の鍵で復元を試みます。復元用 options 取得が HTTP 200、復元が HTTP 404・`{"error":"Credential not found"}` なら検証成功です。先に成功ケースを実行する必要はありません。
 
-出力例: [成功時](lib/tasks/sample_result.log) / [2 回実行時](lib/tasks/sample_result_twice.log) / [未登録の鍵による失敗時](lib/tasks/sample_failure.log)
+出力例: [成功時](lib/tasks/sample_result.log) / [2 回実行時](lib/tasks/sample_result_twice.log) / [署名カウンター検証時](lib/tasks/sample_sign_count.log) / [未登録の鍵による失敗時](lib/tasks/sample_failure.log)
 
 ## 開発・停止
 
