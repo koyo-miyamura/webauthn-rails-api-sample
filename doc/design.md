@@ -50,8 +50,8 @@ credential と identity は、主キー `id` ではなく WebAuthn 用のユー�
 | --- | --- | --- | --- |
 | 1 | `/api/v1/registration/options` | `{}` | `publicKeyOption` に登録用 options（`challenge`、`rp`、`user` など） |
 | 2 | `/api/v1/registration` | 登録レスポンスをリクエスト直下に格納 | 公開鍵を登録・更新し、`{"status":"ok"}` |
-| 3 | `/api/v1/recovery/options` | `{}` | `recovery_id` と、`publicKeyOption` に復元用 options |
-| 4 | `/api/v1/recovery` | 手順 3 の `recovery_id` と、署名レスポンスを格納した `credential` | 署名カウンターを更新し、`{"success":true}` |
+| 3 | `/api/v1/recovery/options` | `{}` | `requestId` と、`publicKeyOption` に復元用 options |
+| 4 | `/api/v1/recovery` | 手順 3 の `requestId` と、署名レスポンスを格納した `credential` | 署名カウンターを更新し、`{"success":true}` |
 
 登録用・復元用 options の `challenge` を、それぞれ次の手順で使用します。復元用 options は未登録でも取得でき、`allowCredentials` は空配列です。登録済みかどうかは手順 4 で判定します。
 
@@ -65,7 +65,7 @@ credential と identity は、主キー `id` ではなく WebAuthn 用のユー�
 
 ## チャレンジの管理
 
-- 登録用はユーザーごとに保持し、options の再取得で上書きします。復元用は `recovery_id` ごとに保持します。
+- 登録用はユーザーごとに保持し、options の再取得で上書きします。復元用は `requestId` ごとに保持します。
 - 有効期限は 30 分です。開発環境ではプロセス内のメモリーを使うため、サーバー再起動で失われ、複数プロセス間では共有されません。
 - 同じチャレンジで並行処理が進むのを防ぐため、検証後の削除に成功した要求だけを先に進めます。登録では DB 更新より先に削除するため、DB 更新に失敗してもチャレンジは戻りません。
 

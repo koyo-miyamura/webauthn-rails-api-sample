@@ -37,7 +37,7 @@ assertion = client.get(
 )
 
 recovery_request = {
-  recovery_id: recovery.fetch("recovery_id"),
+  requestId: recovery.fetch("requestId"),
   credential: assertion
 }
 

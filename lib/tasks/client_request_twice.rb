@@ -34,7 +34,7 @@ def recover(client, step)
     allow_credentials: ClientHelper.allow_credential_ids_from(recovery_options)
   )
   recovery_request = {
-    recovery_id: recovery.fetch("recovery_id"),
+    requestId: recovery.fetch("requestId"),
     credential: assertion
   }
   ClientHelper.print_json "Request", recovery_request
