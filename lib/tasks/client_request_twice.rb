@@ -7,9 +7,10 @@ def register(client, step)
   ClientHelper.print_json "Response", options
 
   puts "\n── #{step + 1}. 公開鍵登録 ──"
+  create_options = options.fetch("publicKeyOption")
   registration = client.create(
-    challenge: options.fetch("challenge"),
-    rp_id: ClientHelper.rp_id_from(options)
+    challenge: create_options.fetch("challenge"),
+    rp_id: ClientHelper.rp_id_from(create_options)
   )
   ClientHelper.print_json "Request", registration
   ClientHelper.print_decoded_attestation(registration)
@@ -26,7 +27,7 @@ def recover(client, step)
   ClientHelper.print_json "Response", recovery
 
   puts "\n── #{step + 1}. 公開鍵を使った検証（復元） ──"
-  recovery_options = recovery.fetch("options")
+  recovery_options = recovery.fetch("publicKeyOption")
   assertion = client.get(
     challenge: recovery_options.fetch("challenge"),
     rp_id: ClientHelper.rp_id_from(recovery_options),

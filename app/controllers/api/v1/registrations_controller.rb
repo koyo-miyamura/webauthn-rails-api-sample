@@ -16,7 +16,7 @@ class Api::V1::RegistrationsController < ApplicationController
     # チャレンジの保存。Redis や Cookie などでも良い。
     Rails.cache.write(cache_key(user_identity), create_options.challenge, expires_in: 30.minutes)
 
-    render json: create_options
+    render json: { publicKeyOption: create_options }
   end
 
   def create

@@ -10,7 +10,7 @@ ClientHelper.print_json "Response", recovery
 
 puts "\n── 4. 未登録の公開鍵を使った検証（復元失敗を期待） ──"
 
-recovery_options = recovery.fetch("options")
+recovery_options = recovery.fetch("publicKeyOption")
 rp_id = ClientHelper.rp_id_from(recovery_options)
 
 # FakeClient needs a local credential to sign an assertion that reaches the server's lookup.

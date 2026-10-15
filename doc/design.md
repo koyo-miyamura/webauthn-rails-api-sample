@@ -48,9 +48,9 @@ credential と identity は、主キー `id` ではなく WebAuthn 用のユー�
 
 | 手順 | エンドポイント | リクエスト | 成功応答 |
 | --- | --- | --- | --- |
-| 1 | `/api/v1/registration/options` | `{}` | 登録用 options（`challenge`、`rp`、`user` など） |
+| 1 | `/api/v1/registration/options` | `{}` | `publicKeyOption` に登録用 options（`challenge`、`rp`、`user` など） |
 | 2 | `/api/v1/registration` | 登録レスポンスをリクエスト直下に格納 | 公開鍵を登録・更新し、`{"status":"ok"}` |
-| 3 | `/api/v1/recovery/options` | `{}` | `recovery_id` と復元用 `options` |
+| 3 | `/api/v1/recovery/options` | `{}` | `recovery_id` と、`publicKeyOption` に復元用 options |
 | 4 | `/api/v1/recovery` | 手順 3 の `recovery_id` と、署名レスポンスを格納した `credential` | 署名カウンターを更新し、`{"success":true}` |
 
 登録用・復元用 options の `challenge` を、それぞれ次の手順で使用します。復元用 options は未登録でも取得でき、`allowCredentials` は空配列です。登録済みかどうかは手順 4 で判定します。

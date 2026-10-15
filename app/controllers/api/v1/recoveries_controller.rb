@@ -8,7 +8,7 @@ class Api::V1::RecoveriesController < ApplicationController
 
     render json: {
       recovery_id: recovery_id,
-      options: get_options
+      publicKeyOption: get_options
     }
   end
 
