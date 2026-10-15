@@ -8,9 +8,9 @@ HTTP 200
 
 Response:
 {
-  "requestId": "86396b996c8bfbc1fdbbf1a77c02af774f0db99e1fa5bbe83ba8c7cc46729069",
+  "requestId": "1850e02080fbf2f0c2bacaf733ed277052b4596e40bf7fd62bf4631c46f7b344",
   "publicKeyOption": {
-    "challenge": "XzvZLM1Ccefy3r--RvRlnluUXKnJ4L9Vxc9xxEPxU_4",
+    "challenge": "VT3oEXl_VhWgExhpnnJSeey0GAwH9PQwq5pa4l8OH18",
     "timeout": 120000,
     "extensions": {},
     "allowCredentials": []
@@ -22,17 +22,17 @@ Response:
 
 Request:
 {
-  "requestId": "86396b996c8bfbc1fdbbf1a77c02af774f0db99e1fa5bbe83ba8c7cc46729069",
+  "requestId": "1850e02080fbf2f0c2bacaf733ed277052b4596e40bf7fd62bf4631c46f7b344",
   "credential": {
     "type": "public-key",
-    "id": "oc3WHwqzF52Wx-2cxdib3A",
-    "rawId": "oc3WHwqzF52Wx-2cxdib3A",
+    "id": "SwFoQcOV6JweS196snLajA",
+    "rawId": "SwFoQcOV6JweS196snLajA",
     "clientExtensionResults": null,
     "authenticatorAttachment": "platform",
     "response": {
-      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiWHp2WkxNMUNjZWZ5M3ItLVJ2UmxubHVVWEtuSjRMOVZ4Yzl4eEVQeFVfNCIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiVlQzb0VYbF9WaFdnRXhocG5uSlNlZXkwR0F3SDlQUXdxNXBhNGw4T0gxOCIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
       "authenticatorData": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzMRAAAAAQ",
-      "signature": "MEYCIQC6sOxaXEzXIO2-NdKNYW5zmv2JQUGS0_0zCHNN9-iXOgIhAKwLWqcjGBAc_3d8bSw0Ul2ZdlTb52TY-elzof80nYEz",
+      "signature": "MEYCIQCXseQlIAS9Ru1BiMgs9q3PdC5DPNnLModIjrBLrdaw_gIhAPKaQVUhdG8JrjkV_Dvao0iBV63CTdHfubNszeKawt-0",
       "userHandle": null
     }
   }
@@ -41,7 +41,7 @@ Request:
 Decoded clientDataJSON:
 {
   "type": "webauthn.get",
-  "challenge": "XzvZLM1Ccefy3r--RvRlnluUXKnJ4L9Vxc9xxEPxU_4",
+  "challenge": "VT3oEXl_VhWgExhpnnJSeey0GAwH9PQwq5pa4l8OH18",
   "origin": "https://auth.example.com"
 }
 

@@ -2,9 +2,7 @@ class Api::V1::RecoveriesController < ApplicationController
   def options
     # 未ログインを前提とする
     get_options = WebAuthn::Credential.options_for_get
-    request_id = SecureRandom.hex(32)
-
-    Rails.cache.write(cache_key(request_id), get_options.challenge, expires_in: 30.minutes)
+    request_id = WebauthnChallengeRequest.issue(:recovery, get_options.challenge)
 
     render json: {
       requestId: request_id,
@@ -21,7 +19,11 @@ class Api::V1::RecoveriesController < ApplicationController
       return render json: { error: "Credential not found" }, status: :not_found
     end
 
-    get_options_challenge = Rails.cache.read(cache_key(request_id))
+    get_options_challenge = WebauthnChallengeRequest.challenge(:recovery, request_id)
+    unless get_options_challenge
+      return render json: { error: "Recovery request is no longer available" },
+        status: :unprocessable_entity
+    end
 
     begin
       webauthn_credential.verify(
@@ -32,7 +34,7 @@ class Api::V1::RecoveriesController < ApplicationController
       )
 
       # 並行リクエスト対策としてキャッシュから削除できなければエラーを返す
-      unless Rails.cache.delete(cache_key(request_id))
+      unless WebauthnChallengeRequest.consume(:recovery, request_id)
         return render json: { error: "Recovery request is no longer available" },
           status: :unprocessable_entity
       end
@@ -45,11 +47,5 @@ class Api::V1::RecoveriesController < ApplicationController
     rescue WebAuthn::Error => e
       render json: { error: e.message }, status: :unprocessable_entity
     end
-  end
-
-  private
-
-  def cache_key(request_id)
-    "webauthn:recovery:#{request_id}"
   end
 end

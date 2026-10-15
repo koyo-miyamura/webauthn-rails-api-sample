@@ -15,11 +15,16 @@ registration = client.create(
   rp_id: ClientHelper.rp_id_from(create_options)
 )
 
-ClientHelper.print_json "Request", registration
+registration_request = {
+  requestId: options.fetch("requestId"),
+  credential: registration
+}
+
+ClientHelper.print_json "Request", registration_request
 ClientHelper.print_decoded_attestation(registration)
 
 puts "\nPOST /api/v1/registration"
-response = ClientHelper.post_json("/api/v1/registration", registration)
+response = ClientHelper.post_json("/api/v1/registration", registration_request)
 ClientHelper.print_json "Response", response
 
 puts "\n── 3. 復元用 options 取得 ──"

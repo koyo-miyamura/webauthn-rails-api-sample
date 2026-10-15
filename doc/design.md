@@ -48,8 +48,8 @@ credential と identity は、主キー `id` ではなく WebAuthn 用のユー�
 
 | 手順 | エンドポイント | リクエスト | 成功応答 |
 | --- | --- | --- | --- |
-| 1 | `/api/v1/registration/options` | `{}` | `publicKeyOption` に登録用 options（`challenge`、`rp`、`user` など） |
-| 2 | `/api/v1/registration` | 登録レスポンスをリクエスト直下に格納 | 公開鍵を登録・更新し、`{"status":"ok"}` |
+| 1 | `/api/v1/registration/options` | `{}` | `requestId` と、`publicKeyOption` に登録用 options（`challenge`、`rp`、`user` など） |
+| 2 | `/api/v1/registration` | 手順 1 の `requestId` と、登録レスポンスを格納した `credential` | 公開鍵を登録し、`{"status":"ok"}` |
 | 3 | `/api/v1/recovery/options` | `{}` | `requestId` と、`publicKeyOption` に復元用 options |
 | 4 | `/api/v1/recovery` | 手順 3 の `requestId` と、署名レスポンスを格納した `credential` | 署名カウンターを更新し、`{"success":true}` |
 
@@ -57,7 +57,8 @@ credential と identity は、主キー `id` ではなく WebAuthn 用のユー�
 
 | エラー条件 | HTTP | 応答 |
 | --- | --- | --- |
-| 登録時に登録用 options を未取得、またはチャレンジが期限切れ | 422 | `{"error":"Registration request is no longer available"}` |
+| 登録時の `requestId` が無効、またはチャレンジが期限切れ | 422 | `{"error":"Registration request is no longer available"}` |
+| 復元時の `requestId` が無効、またはチャレンジが期限切れ | 422 | `{"error":"Recovery request is no longer available"}` |
 | 復元時に credential が未登録 | 404 | `{"error":"Credential not found"}` |
 | 復元時の署名カウンターが保存値以下 | 422 | `{"error":"WebAuthn::SignCountVerificationError"}` |
 | 検証処理で `WebAuthn::Error` が発生 | 422 | `{"error":"<e.message>"}` |
@@ -65,7 +66,8 @@ credential と identity は、主キー `id` ではなく WebAuthn 用のユー�
 
 ## チャレンジの管理
 
-- 登録用はユーザーごとに保持し、options の再取得で上書きします。復元用は `requestId` ごとに保持します。
+- 登録用・復元用とも options 取得時に `requestId` を発行し、`requestId` ごとにチャレンジを保持します。同じユーザーが同時に複数の登録を進めても互いに干渉しません。
+- 発行・取り出し・削除は `WebauthnChallengeRequest`（`app/lib`）に共通化し、用途（`registration` / `recovery`）でキャッシュキーを分けています。
 - 有効期限は 30 分です。開発環境ではプロセス内のメモリーを使うため、サーバー再起動で失われ、複数プロセス間では共有されません。
 - 同じチャレンジで並行処理が進むのを防ぐため、検証後の削除に成功した要求だけを先に進めます。登録では DB 更新より先に削除するため、DB 更新に失敗してもチャレンジは戻りません。
 

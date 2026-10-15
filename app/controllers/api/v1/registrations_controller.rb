@@ -13,27 +13,30 @@ class Api::V1::RegistrationsController < ApplicationController
       exclude: user_identity.user_webauthn_credentials.pluck(:credential_id)
     )
 
-    # チャレンジの保存。Redis や Cookie などでも良い。
-    Rails.cache.write(cache_key(user_identity), create_options.challenge, expires_in: 30.minutes)
+    request_id = WebauthnChallengeRequest.issue(:registration, create_options.challenge)
 
-    render json: { publicKeyOption: create_options }
+    render json: {
+      requestId: request_id,
+      publicKeyOption: create_options
+    }
   end
 
   def create
+    request_id = params[:requestId]
     user_identity = current_user.user_webauthn_identity
-    cached_challenge = user_identity && Rails.cache.read(cache_key(user_identity))
+    cached_challenge = user_identity && WebauthnChallengeRequest.challenge(:registration, request_id)
     unless cached_challenge
       return render json: { error: "Registration request is no longer available" },
         status: :unprocessable_entity
     end
 
-    webauthn_credential = WebAuthn::Credential.from_create(params)
+    webauthn_credential = WebAuthn::Credential.from_create(params[:credential])
 
     begin
       webauthn_credential.verify(cached_challenge)
 
       # 並行リクエスト対策としてキャッシュから削除できなければエラーを返す
-      unless Rails.cache.delete(cache_key(user_identity))
+      unless WebauthnChallengeRequest.consume(:registration, request_id)
         return render json: { error: "Registration request is no longer available" },
           status: :unprocessable_entity
       end
@@ -53,11 +56,5 @@ class Api::V1::RegistrationsController < ApplicationController
     rescue WebAuthn::Error, ActiveRecord::RecordInvalid => e
       render json: { error: e.message }, status: :unprocessable_entity
     end
-  end
-
-  private
-
-  def cache_key(user_identity)
-    "webauthn:registration:#{user_identity.webauthn_user_id}"
   end
 end
