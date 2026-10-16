@@ -8,12 +8,14 @@ HTTP 200
 
 Response:
 {
-  "requestId": "1850e02080fbf2f0c2bacaf733ed277052b4596e40bf7fd62bf4631c46f7b344",
+  "requestId": "766adf6751fb05ad871319f692a56fbed2d7df4f72f90b46c2f79513f3e5090c",
   "publicKeyOption": {
-    "challenge": "VT3oEXl_VhWgExhpnnJSeey0GAwH9PQwq5pa4l8OH18",
+    "challenge": "o8kFy_QvHkJ_PJ1wL29atJ3S_HgwXHk2qDfcFAjt7oc",
     "timeout": 120000,
     "extensions": {},
-    "allowCredentials": []
+    "allowCredentials": [],
+    "rpId": "auth.example.com",
+    "userVerification": "discouraged"
   }
 }
 
@@ -22,17 +24,17 @@ Response:
 
 Request:
 {
-  "requestId": "1850e02080fbf2f0c2bacaf733ed277052b4596e40bf7fd62bf4631c46f7b344",
+  "requestId": "766adf6751fb05ad871319f692a56fbed2d7df4f72f90b46c2f79513f3e5090c",
   "credential": {
     "type": "public-key",
-    "id": "SwFoQcOV6JweS196snLajA",
-    "rawId": "SwFoQcOV6JweS196snLajA",
+    "id": "U1JIUxokPZpdFIF0lg1DuQ",
+    "rawId": "U1JIUxokPZpdFIF0lg1DuQ",
     "clientExtensionResults": null,
     "authenticatorAttachment": "platform",
     "response": {
-      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiVlQzb0VYbF9WaFdnRXhocG5uSlNlZXkwR0F3SDlQUXdxNXBhNGw4T0gxOCIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
+      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoibzhrRnlfUXZIa0pfUEoxd0wyOWF0SjNTX0hnd1hIazJxRGZjRkFqdDdvYyIsIm9yaWdpbiI6Imh0dHBzOi8vYXV0aC5leGFtcGxlLmNvbSJ9",
       "authenticatorData": "wgTIVP_l81o7hSCL2YnGDRxW1Wz9mm4vWPKLltF-BzMRAAAAAQ",
-      "signature": "MEYCIQCXseQlIAS9Ru1BiMgs9q3PdC5DPNnLModIjrBLrdaw_gIhAPKaQVUhdG8JrjkV_Dvao0iBV63CTdHfubNszeKawt-0",
+      "signature": "MEUCIDNxGfOGYjkLPtPYaHbEWi_KuhsulR6s8CVvh85EONZUAiEAnNWXoiB9JrdX8nGhXx2rlgM4rhPP-aGu-VnItJp8etA",
       "userHandle": null
     }
   }
@@ -41,7 +43,7 @@ Request:
 Decoded clientDataJSON:
 {
   "type": "webauthn.get",
-  "challenge": "VT3oEXl_VhWgExhpnnJSeey0GAwH9PQwq5pa4l8OH18",
+  "challenge": "o8kFy_QvHkJ_PJ1wL29atJ3S_HgwXHk2qDfcFAjt7oc",
   "origin": "https://auth.example.com"
 }
 

@@ -8,7 +8,8 @@ class Api::V1::RegistrationsController < ApplicationController
         name: "usercode-#{user_identity.webauthn_user_id}"
       },
       authenticator_selection: {
-        resident_key: "required"
+        resident_key: "required",
+        user_verification: "discouraged"
       },
       exclude: user_identity.user_webauthn_credentials.pluck(:credential_id)
     )

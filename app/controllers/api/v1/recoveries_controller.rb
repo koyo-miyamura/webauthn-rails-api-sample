@@ -1,7 +1,10 @@
 class Api::V1::RecoveriesController < ApplicationController
   def options
     # 未ログインを前提とする
-    get_options = WebAuthn::Credential.options_for_get
+    get_options = WebAuthn::Credential.options_for_get(
+      rp_id: WebAuthn.configuration.rp_id,
+      user_verification: "discouraged"
+    )
     request_id = WebauthnChallengeRequest.issue(:recovery, get_options.challenge)
 
     render json: {
