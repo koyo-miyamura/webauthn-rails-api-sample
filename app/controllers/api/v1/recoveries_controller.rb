@@ -17,6 +17,7 @@ class Api::V1::RecoveriesController < ApplicationController
     request_id = params[:requestId]
     webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
 
+    # NOTE: 検索するのは Base64URL 文字列の id ではなくデコード済みバイト列の raw_id
     user_webauthn_credential = UserWebauthnCredential.find_by(credential_id: webauthn_credential.raw_id)
     unless user_webauthn_credential
       return render json: { error: "Credential not found" }, status: :not_found

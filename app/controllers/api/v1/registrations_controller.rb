@@ -43,7 +43,7 @@ class Api::V1::RegistrationsController < ApplicationController
       end
 
       user_identity.user_webauthn_credentials.create!(
-        credential_id: webauthn_credential.raw_id,
+        credential_id: webauthn_credential.raw_id, # NOTE: 保存するのは Base64URL 文字列の id ではなくデコード済みバイト列の raw_id
         public_key: webauthn_credential.public_key,
         sign_count: webauthn_credential.sign_count
       )
