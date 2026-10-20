@@ -11,7 +11,7 @@ class Api::V1::RegistrationsController < ApplicationController
         resident_key: "required",
         user_verification: "discouraged"
       },
-      exclude: user_identity.user_webauthn_credentials.pluck(:credential_id)
+      exclude: user_identity.user_webauthn_credentials.map(&:credential_id_base64)
     )
 
     request_id = WebauthnChallengeRequest.issue(:registration, create_options.challenge)
@@ -43,7 +43,7 @@ class Api::V1::RegistrationsController < ApplicationController
       end
 
       user_identity.user_webauthn_credentials.create!(
-        credential_id: webauthn_credential.id,
+        credential_id: webauthn_credential.raw_id,
         public_key: webauthn_credential.public_key,
         sign_count: webauthn_credential.sign_count
       )

@@ -26,7 +26,7 @@ erDiagram
     user_webauthn_credentials {
         integer id PK
         string webauthn_user_id FK
-        string credential_id UK
+        binary credential_id UK
         string public_key UK
         integer sign_count
     }
@@ -35,6 +35,9 @@ erDiagram
 各テーブルの `created_at`・`updated_at` は図から省略しています。
 
 credential は 1 ユーザーにつき複数件持てます。`credential_id` と `public_key` はそれぞれ全体で一意で、どちらかが登録済みのものと重複する鍵は登録できません。登録用 options の `excludeCredentials` に登録済みの `credential_id` を含めるため、同じ認証器の二重登録はクライアント側で弾かれます。identity は登録用 options 取得時に作るため、公開鍵登録前は credential が存在しません。
+
+`credential_id` は認証器が生成するバイト列で、[WebAuthn Level 3 の仕様](https://www.w3.org/TR/webauthn-3/#credential-id)では最大 1023 バイトと定められています。そのため `binary` 型（`limit: 1024`）で保存し、`WebAuthn::Credential` の Base64URL 文字列 `id` ではなく、デコード済みバイト列の `raw_id` を格納します。SQLite では `blob(1024)` になりますが、SQLite は型の長さ制限を強制しないため、この上限は MySQL などの RDBMS で有効になります。ログや API レスポンスで扱う際は `UserWebauthnCredential#credential_id_base64` で Base64URL 文字列に変換します。登録用 options の `excludeCredentials` も、この変換結果を渡しています。
+なお Base64URL 文字列のまま `string`（VARCHAR）で保存しない理由は 1023 バイトを Base64URL にすると 1364 文字になり、MySQLの[インデックスキー長の上限 3072 バイト](https://dev.mysql.com/doc/refman/8.0/en/innodb-limits.html)に対して utf8mb4 の VARCHAR(1364) は超えるため、一意インデックスを作成できないため。`binary`（VARBINARY(1024)）であればキー長が上限内に収まり、バイト列として比較されるのでどちらの問題も起きません。SQLite にはインデックスキー長の実質的な上限がなく、TEXT の比較も既定では大文字小文字を区別する BINARY 照合のため、VARCHAR でも一意インデックスは機能します。それでも `binary` にしているのは、MySQL などへの移行時に挙動が変わらないようにするためになっています。お使いのアプリケーションの特性に合わせて適宜カスタマイズしてください。
 
 `sign_count` は認証器の署名カウンターです。登録時の値を保存し、復元のたびに認証器から受け取った値で更新します。復元時は保存値より大きい値だけを受け付けるため、鍵が複製された場合の再利用を検知できます。カウンターに対応しない認証器は常に 0 を返すので、保存値も 0 のまま検証を通過します。
 

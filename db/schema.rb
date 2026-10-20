@@ -13,7 +13,7 @@
 ActiveRecord::Schema[8.1].define(version: 2026_10_08_074331) do
   create_table "user_webauthn_credentials", force: :cascade do |t|
     t.string "webauthn_user_id", null: false
-    t.string "credential_id", null: false
+    t.binary "credential_id", limit: 1024, null: false
     t.string "public_key", null: false
     t.integer "sign_count", default: 0, null: false
     t.datetime "created_at", null: false

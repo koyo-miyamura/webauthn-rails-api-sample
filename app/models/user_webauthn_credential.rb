@@ -6,4 +6,9 @@ class UserWebauthnCredential < ApplicationRecord
 
   validates :credential_id, presence: true, uniqueness: true
   validates :public_key, presence: true, uniqueness: true
+
+  # credential_id is stored as raw bytes; use this for console logs and API responses
+  def credential_id_base64
+    WebAuthn.standard_encoder.encode(credential_id)
+  end
 end

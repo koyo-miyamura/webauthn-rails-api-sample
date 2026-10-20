@@ -2,7 +2,8 @@ class CreateUserWebauthnCredentials < ActiveRecord::Migration[8.1]
   def change
     create_table :user_webauthn_credentials do |t|
       t.string :webauthn_user_id, null: false
-      t.string :credential_id, null: false
+      # Credential IDs are at most 1023 bytes: https://www.w3.org/TR/webauthn-3/#credential-id
+      t.binary :credential_id, null: false, limit: 1024
       t.string :public_key, null: false
       t.integer :sign_count, null: false, default: 0
 

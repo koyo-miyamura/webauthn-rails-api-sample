@@ -17,7 +17,7 @@ class Api::V1::RecoveriesController < ApplicationController
     request_id = params[:requestId]
     webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
 
-    user_webauthn_credential = UserWebauthnCredential.find_by(credential_id: webauthn_credential.id)
+    user_webauthn_credential = UserWebauthnCredential.find_by(credential_id: webauthn_credential.raw_id)
     unless user_webauthn_credential
       return render json: { error: "Credential not found" }, status: :not_found
     end
