@@ -23,7 +23,8 @@ class Api::V1::RecoveriesController < ApplicationController
       return render json: { error: "Credential not found" }, status: :not_found
     end
 
-    get_options_challenge = WebauthnChallengeRequest.challenge(:recovery, request_id)
+    # チャレンジは検証結果にかかわらず使い切る。並行リクエストで消費できるのは 1 つだけ
+    get_options_challenge = WebauthnChallengeRequest.consume(:recovery, request_id)
     unless get_options_challenge
       return render json: { error: "Recovery request is no longer available" },
         status: :unprocessable_entity
@@ -36,12 +37,6 @@ class Api::V1::RecoveriesController < ApplicationController
         sign_count: user_webauthn_credential.sign_count,
         user_presence: false # ユーザー認証なしで検証するので、UP フラグの検証スキップ
       )
-
-      # 並行リクエスト対策としてキャッシュから削除できなければエラーを返す
-      unless WebauthnChallengeRequest.consume(:recovery, request_id)
-        return render json: { error: "Recovery request is no longer available" },
-          status: :unprocessable_entity
-      end
 
       user_webauthn_credential.update!(sign_count: webauthn_credential.sign_count)
 

@@ -25,7 +25,8 @@ class Api::V1::RegistrationsController < ApplicationController
   def create
     request_id = params[:requestId]
     user_identity = current_user.user_webauthn_identity
-    cached_challenge = user_identity && WebauthnChallengeRequest.challenge(:registration, request_id)
+    # チャレンジは検証結果にかかわらず使い切る。並行リクエストで消費できるのは 1 つだけ
+    cached_challenge = user_identity && WebauthnChallengeRequest.consume(:registration, request_id)
     unless cached_challenge
       return render json: { error: "Registration request is no longer available" },
         status: :unprocessable_entity
@@ -35,12 +36,6 @@ class Api::V1::RegistrationsController < ApplicationController
 
     begin
       webauthn_credential.verify(cached_challenge)
-
-      # 並行リクエスト対策としてキャッシュから削除できなければエラーを返す
-      unless WebauthnChallengeRequest.consume(:registration, request_id)
-        return render json: { error: "Registration request is no longer available" },
-          status: :unprocessable_entity
-      end
 
       user_identity.user_webauthn_credentials.create!(
         credential_id: webauthn_credential.raw_id, # NOTE: 保存するのは Base64URL 文字列の id ではなくデコード済みバイト列の raw_id

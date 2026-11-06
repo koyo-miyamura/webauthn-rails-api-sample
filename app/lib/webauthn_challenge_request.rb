@@ -11,14 +11,17 @@ module WebauthnChallengeRequest
     request_id
   end
 
-  def challenge(purpose, request_id)
+  # Returns the challenge only to the single caller that actually deletes the key.
+  # Rails.cache.delete returns true only when the key existed, so concurrent callers
+  # that read the same challenge cannot all pass this gate.
+  def consume(purpose, request_id)
     return if request_id.blank?
 
-    Rails.cache.read(cache_key(purpose, request_id))
-  end
+    key = cache_key(purpose, request_id)
+    challenge = Rails.cache.read(key)
+    return unless challenge && Rails.cache.delete(key)
 
-  def consume(purpose, request_id)
-    Rails.cache.delete(cache_key(purpose, request_id))
+    challenge
   end
 
   def cache_key(purpose, request_id)
